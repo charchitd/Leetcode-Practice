@@ -1,43 +1,49 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
+private:
+     TreeNode* parent_of_a;
+      TreeNode* parent_of_b;
+      int level_a;
+      int level_b;
 public:
-    //n finding node ; h current depth ; d depth of finding node
-    TreeNode* depth(TreeNode* root, int& n, int h, int& d )
+    
+    bool isCousins(TreeNode* root, int a, int b) 
     {
-        if(root==NULL) return NULL;
         
-        //left children
-        if(root->left && root->left->val==n)
-        {
-            d=h+1;
-            return root;
-        }
-        //right children
-        if(root->right && root->right->val==n)
-        {
-            d=h+1;
-            return root;
-        }
+        if(root==NULL) return false;
         
-        //if not found, move down the tree
-        TreeNode* l = depth(root->left,n,h+1,d);
-        if(l) return l;
-        TreeNode* r = depth(root->right,n,h+1,d);
-        if(r) return r;
+        preorder_traversal(root, a, b, NULL, 0);
         
-    return NULL;
+        return ((parent_of_a != parent_of_b) && (level_a == level_b));
+        
     }
     
-    
-    bool isCousins(TreeNode* root, int x, int y) 
-    {
-        int xDepth=-1, yDepth=-1;
-        TreeNode* xParent = depth(root,x,0,xDepth);
-        TreeNode* yParent = depth(root,y,0,yDepth);
-        
-        if(xParent!=yParent && xDepth==yDepth)
-            return true;
-        else
-            return false;
+    void preorder_traversal(TreeNode* root, int a, int b, TreeNode* parent, int level) {
+        if(root==NULL) return;
+        if (root->val == a) {
+          parent_of_a = parent;
+          level_a = level;
+        }
+        if (root->val == b) {
+          parent_of_b = parent;
+          level_b = level;
+        }
+        preorder_traversal(root->left, a, b, root, level + 1);
+        preorder_traversal(root->right, a, b, root, level + 1);
     }
+
 };
 
+
+// DSA: Tree
+// TC: O(n^2)
